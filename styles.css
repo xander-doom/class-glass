@@ -72,3 +72,21 @@
   background-color: #fff;
   color: #333;
 }
+
+.cg-course-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cg-course-semesters {
+  margin-left: auto;
+  text-align: right;
+  padding-right: 15px;
+  color: gray;
+}
+
+.cg-no-vmargin {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}

@@ -1,9 +1,8 @@
-function createTooltip(course, event, currentTooltip) {
-  console.log("Creating tooltip for course:", course); // Debugging log
+const apiCache = {};
 
+function createTooltip(course, event, currentTooltip) {
   // Remove any existing tooltip
   if (currentTooltip) {
-    console.log("Removing existing tooltip"); // Debugging log
     currentTooltip.remove();
     currentTooltip = null;
   }
@@ -25,8 +24,6 @@ function createTooltip(course, event, currentTooltip) {
   document.body.appendChild(tooltip);
   currentTooltip = tooltip;
 
-  console.log("Tooltip created:", tooltip); // Debugging log
-
   // Fetch course details from the API asynchronously
   fetchCourseDetails(course, tooltip);
 
@@ -39,57 +36,79 @@ async function fetchCourseDetails(course, tooltip) {
     .getAttribute("department")
     .trim()
     .toLowerCase();
-  const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=col&term=1252&p=1&subject=${courseDepartment}`;
+  const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=col&p=1&subject=${courseDepartment}`;
+
+  // Check if the response is cached
+  if (apiCache[apiUrl]) {
+    console.log("Using cached data for:", apiUrl);
+    updateTooltip(apiCache[apiUrl], tooltip, courseDepartment, courseNumber);
+    return;
+  }
 
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    if (data.data.courses && data.data.courses.length > 0) {
-      // Find the first course that matches the department and catalog number
-      const matchingCourse = data.data.courses.find(
-        (c) =>
-          c.course.subject.toLowerCase() === courseDepartment &&
-          c.course.catalogNumber === courseNumber
-      ).course;
+    // Cache the response
+    apiCache[apiUrl] = data;
 
-      if (matchingCourse) {
-        const courseTitle = matchingCourse.title;
-        const courseDescription =
-          matchingCourse.description || "No description available.";
-
-        tooltip.innerHTML = `
-          <h4>${courseDepartment.toUpperCase()} ${courseNumber}: ${courseTitle}</h4>
-          <p>${courseDescription}</p>
-        `;
-      } else {
-        tooltip.innerHTML = `
-          <strong>Course name:</strong> ${courseDepartment.toUpperCase()} ${courseNumber}<br>
-          <strong>Credit hours:</strong> 3<br>
-          <strong>Description:</strong> No courses found.
-        `;
-      }
-    } else {
-      tooltip.innerHTML = `
-        <strong>Course name:</strong> ${courseDepartment.toUpperCase()} ${courseNumber}<br>
-        <strong>Credit hours:</strong> 3<br>
-        <strong>Description:</strong> No courses found.
-      `;
-    }
+    updateTooltip(data, tooltip, courseDepartment, courseNumber);
   } catch (error) {
     console.error("Error fetching course details:", error);
     tooltip.innerHTML = `
       <strong>Course name:</strong> ${courseDepartment.toUpperCase()} ${courseNumber}<br>
-      <strong>Credit hours:</strong> 3<br>
       <strong>Description:</strong> Unable to fetch course details.
+      <p>${error}</p>
+    `;
+  }
+}
+
+function updateTooltip(data, tooltip, courseDepartment, courseNumber) {
+  if (data.data.courses && data.data.courses.length > 0) {
+    // Find all courses that match the department and catalog number
+    const matchingCourses = data.data.courses.filter(
+      (c) =>
+        c.course.subject.toLowerCase() === courseDepartment &&
+        c.course.catalogNumber === courseNumber
+    );
+
+    if (matchingCourses.length > 0) {
+      const matchingCourse = matchingCourses[0].course;
+      const courseTitle = matchingCourse.title;
+      const courseDescription =
+        matchingCourse.description || "No description available.";
+      const courseCreditHours =
+        matchingCourse.minUnits === matchingCourse.maxUnits
+          ? `${matchingCourse.minUnits.toFixed(1)}`
+          : `${matchingCourse.minUnits.toFixed(1)} – ${matchingCourse.maxUnits.toFixed(1)}`;
+      const courseSemesters = matchingCourses
+        .map((c) => c.course.term)
+        .filter((term, i, self) => i === self.indexOf(term))
+        .map((term) => term.slice(0, 2) + term.slice(-2))
+        .join(", ");
+
+      tooltip.innerHTML = `
+        <p><strong>${courseDepartment.toUpperCase()} ${courseNumber}: ${courseTitle}</strong></p>
+        <div class="cg-course-info">
+          <p class="cg-no-vmargin"><strong>Credit hours:</strong> ${courseCreditHours}</p>
+          <span class="cg-course-semesters"><strong>${courseSemesters}</strong></span>
+        </div>
+        <p>${courseDescription}</p>
+      `;
+    } else {
+      tooltip.innerHTML = `
+        <strong>No offerings</strong>
+      `;
+    }
+  } else {
+    tooltip.innerHTML = `
+      <strong>No offerings</strong>
     `;
   }
 }
 
 function highlightCourses() {
   const courses = document.querySelectorAll(".course.draggable");
-
-  console.log(`Found ${courses.length} courses.`); // Debugging log
 
   let currentTooltip = null;
   let tooltipCreatedByHover = false;
@@ -98,7 +117,6 @@ function highlightCourses() {
     course.classList.add("cg-highlight-button");
 
     course.addEventListener("click", (event) => {
-      console.log("Course clicked:", course); // Debugging log
       event.stopPropagation();
       currentTooltip = createTooltip(course, event, currentTooltip);
       tooltipCreatedByHover = false;
@@ -106,7 +124,6 @@ function highlightCourses() {
 
     course.addEventListener("mouseover", (event) => {
       if (!currentTooltip) {
-        console.log("Course hovered:", course); // Debugging log
         currentTooltip = createTooltip(course, event, currentTooltip);
         tooltipCreatedByHover = true;
       }
@@ -114,7 +131,6 @@ function highlightCourses() {
 
     course.addEventListener("mouseout", () => {
       if (currentTooltip && tooltipCreatedByHover) {
-        console.log("Course mouseout:", course); // Debugging log
         currentTooltip.remove();
         currentTooltip = null;
       }
@@ -123,7 +139,6 @@ function highlightCourses() {
 
   document.addEventListener("click", () => {
     if (currentTooltip) {
-      console.log("Document clicked, removing tooltip"); // Debugging log
       currentTooltip.remove();
       currentTooltip = null;
     }
