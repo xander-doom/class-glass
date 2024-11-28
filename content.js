@@ -13,7 +13,7 @@ function createTooltip(course, event, currentTooltip) {
 
   // Placeholder content
   tooltip.innerHTML = `
-    <h2> Loading... </h2>
+    Loading...
   `;
 
   // Position the tooltip
@@ -41,7 +41,13 @@ async function fetchCourseDetails(course, tooltip) {
   // Check if the response is cached
   if (apiCache[apiUrl]) {
     console.log("Using cached data for:", apiUrl);
-    updateTooltip(apiCache[apiUrl], tooltip, courseDepartment, courseNumber);
+    updateTooltip(
+      course,
+      apiCache[apiUrl],
+      tooltip,
+      courseDepartment,
+      courseNumber
+    );
     return;
   }
 
@@ -52,7 +58,7 @@ async function fetchCourseDetails(course, tooltip) {
     // Cache the response
     apiCache[apiUrl] = data;
 
-    updateTooltip(data, tooltip, courseDepartment, courseNumber);
+    updateTooltip(course, data, tooltip, courseDepartment, courseNumber);
   } catch (error) {
     console.error("Error fetching course details:", error);
     tooltip.innerHTML = `
@@ -63,7 +69,7 @@ async function fetchCourseDetails(course, tooltip) {
   }
 }
 
-function updateTooltip(data, tooltip, courseDepartment, courseNumber) {
+function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
   if (data.data.courses && data.data.courses.length > 0) {
     // Find all courses that match the department and catalog number
     const matchingCourses = data.data.courses.filter(
@@ -94,16 +100,43 @@ function updateTooltip(data, tooltip, courseDepartment, courseNumber) {
           <span class="cg-course-semesters"><strong>${courseSemesters}</strong></span>
         </div>
         <p>${courseDescription}</p>
+        <div class="cg-buttons">
+          <button class="cg-button cg-button-clear"/>
+          <button class="cg-button cg-button-red"/>
+          <button class="cg-button cg-button-yellow"/>
+          <button class="cg-button cg-button-green"/>
+        </div>
       `;
+
+      tooltip
+        .querySelector(".cg-button-clear")
+        .addEventListener("click", () => {
+          course.style.removeProperty("background-color");
+        });
+      tooltip.querySelector(".cg-button-red").addEventListener("click", () => {
+        course.style.backgroundColor = "rgb(239, 62, 62)";
+      });
+      tooltip
+        .querySelector(".cg-button-yellow")
+        .addEventListener("click", () => {
+          course.style.backgroundColor = "rgb(244, 204, 83)";
+        });
+      tooltip
+        .querySelector(".cg-button-green")
+        .addEventListener("click", () => {
+          course.style.backgroundColor = "rgb(112, 181, 108)";
+        });
     } else {
       tooltip.innerHTML = `
         <strong>No offerings</strong>
       `;
+      course.style.backgroundColor = "rgb(239, 62, 62)";
     }
   } else {
     tooltip.innerHTML = `
       <strong>No offerings</strong>
     `;
+    course.style.backgroundColor = "rgb(239, 62, 62)";
   }
 }
 
@@ -123,10 +156,12 @@ function highlightCourses() {
     });
 
     course.addEventListener("mouseover", (event) => {
-      if (!currentTooltip) {
-        currentTooltip = createTooltip(course, event, currentTooltip);
-        tooltipCreatedByHover = true;
-      }
+      setTimeout(() => {
+        if (!currentTooltip && course.matches(":hover")) {
+          currentTooltip = createTooltip(course, event, currentTooltip);
+          tooltipCreatedByHover = true;
+        }
+      }, 200);
     });
 
     course.addEventListener("mouseout", () => {
@@ -137,8 +172,8 @@ function highlightCourses() {
     });
   });
 
-  document.addEventListener("click", () => {
-    if (currentTooltip) {
+  document.addEventListener("click", (event) => {
+    if (currentTooltip && !currentTooltip.contains(event.target)) {
       currentTooltip.remove();
       currentTooltip = null;
     }

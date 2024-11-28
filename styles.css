@@ -90,3 +90,47 @@
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+.cg-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-bottom: 10px;
+}
+
+.cg-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cg-button-clear {
+  background-color: #c7d0d5;
+}
+
+.cg-button-red {
+  background-color: #ba271b;
+}
+
+.cg-button-yellow {
+  background-color: #f3b047;
+}
+
+.cg-button-green {
+  background-color: #479c43;
+}
+
+.cg-icon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.125em;
+}
