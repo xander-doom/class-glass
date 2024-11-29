@@ -18,8 +18,14 @@ function createTooltip(course, event, currentTooltip) {
   `;
 
   // Position the tooltip
-  tooltip.style.left = `${event.pageX + 10}px`;
-  tooltip.style.top = `${event.pageY + 10}px`;
+  // Get course element position
+  const courseRect = course.getBoundingClientRect();
+  const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+  // Position tooltip to the right of the course element
+  tooltip.style.left = `${courseRect.right + scrollLeft + 10}px`;
+  tooltip.style.top = `${courseRect.top + scrollTop}px`;
 
   // Add the tooltip to the document
   document.body.appendChild(tooltip);
@@ -183,7 +189,9 @@ function highlightCourses() {
     // Course interaction callbacks
     course.addEventListener("click", (event) => {
       event.stopPropagation();
-      currentTooltip = createTooltip(course, event, currentTooltip);
+      if (!currentTooltip) {
+        currentTooltip = createTooltip(course, event, currentTooltip);
+      }
       tooltipCreatedByHover = false;
     });
 
