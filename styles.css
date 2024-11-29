@@ -5,12 +5,7 @@
 }
 
 .cg-highlight-button:hover {
-  background-color: lightblue;
-}
-
-.cg-clicked-highlight {
-  background-color: rgb(133, 204, 227);
-  color: white;
+  background-color: #add8e6;
 }
 
 .cg-tooltip {
@@ -152,11 +147,11 @@
 }
 
 .cg-highlight-error {
-  background-color: #e98158;
+  background-color: #f28f68 !important;
 }
 
 .cg-highlight-red {
-  background-color: #e5553e;
+  background-color: #ed614b;
 }
 
 .cg-highlight-yellow {
