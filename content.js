@@ -86,7 +86,8 @@ function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
     const matchingCourses = data.data.courses.filter(
       (c) =>
         c.course.subject.toLowerCase() === courseDepartment &&
-        c.course.catalogNumber === courseNumber
+        (c.course.catalogNumber === courseNumber ||
+          c.course.catalogNumber === `${courseNumber}H`) // Handle honors courses
     );
 
     // If there are matching courses, assume they are identical besides the term offered.
