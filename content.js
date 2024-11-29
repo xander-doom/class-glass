@@ -44,38 +44,40 @@ async function fetchCourseDetails(course, tooltip) {
     courseNumber = courseInfo[1];
   }
 
-  const selectedCampus = localStorage.getItem("selectedCampus") || "col";
-  const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=${selectedCampus}&p=1&subject=${courseDepartment}`;
+  // Retrieve selectedCampus from chrome.storage.sync
+  chrome.storage.sync.get({ campus: "col" }, (items) => {
+    const selectedCampus = items.campus;
+    const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=${selectedCampus}&p=1&subject=${courseDepartment}`;
 
-  // Check if the response is cached
-  if (apiCache[apiUrl]) {
-    console.log("Using cached data for:", apiUrl);
-    updateTooltip(
-      course,
-      apiCache[apiUrl],
-      tooltip,
-      courseDepartment,
-      courseNumber
-    );
-    return;
-  }
+    // Check if the response is cached
+    if (apiCache[apiUrl]) {
+      console.log("Using cached data for:", apiUrl);
+      updateTooltip(
+        course,
+        apiCache[apiUrl],
+        tooltip,
+        courseDepartment,
+        courseNumber
+      );
+      return;
+    }
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    // Cache the response
-    apiCache[apiUrl] = data;
-
-    updateTooltip(course, data, tooltip, courseDepartment, courseNumber);
-  } catch (error) {
-    console.error("Error fetching course details:", error);
-    tooltip.innerHTML = `
-      <strong>Course name:</strong> ${courseDepartment.toUpperCase()} ${courseNumber}<br>
-      <strong>Description:</strong> Unable to fetch course details.
-      <p>${error}</p>
-    `;
-  }
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        // Cache the response
+        apiCache[apiUrl] = data;
+        updateTooltip(course, data, tooltip, courseDepartment, courseNumber);
+      })
+      .catch((error) => {
+        console.error("Error fetching course details:", error);
+        tooltip.innerHTML = `
+          <strong>Course name:</strong> ${courseDepartment.toUpperCase()} ${courseNumber}<br>
+          <strong>Description:</strong> Unable to fetch course details.
+          <p>${error}</p>
+        `;
+      });
+  });
 }
 
 function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
