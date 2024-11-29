@@ -193,7 +193,7 @@ function highlightCourses() {
           currentTooltip = createTooltip(course, event, currentTooltip);
           tooltipCreatedByHover = true;
         }
-      }, 200);
+      }, 100); // Delay tooltip to prevent spamming the API
     });
 
     course.addEventListener("mouseout", () => {
