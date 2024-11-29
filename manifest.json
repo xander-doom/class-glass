@@ -6,9 +6,7 @@
   "author": "Xander Doom",
   "homepage_url": "https://github.com/xander-doom/class-glass",
   "permissions": ["storage"],
-  "host_permissions": [
-    "https://degreeaudit.osu.edu/selfservice/audit/read.html*"
-  ],
+  "host_permissions": ["https://degreeaudit.osu.edu/*"],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": false
@@ -29,7 +27,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://degreeaudit.osu.edu/selfservice/audit/read.html*"],
+      "matches": ["https://degreeaudit.osu.edu/*"],
       "js": ["content.js"],
       "css": ["styles.css"]
     }
