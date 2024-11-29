@@ -31,12 +31,21 @@ function createTooltip(course, event, currentTooltip) {
 }
 
 async function fetchCourseDetails(course, tooltip) {
-  const courseNumber = course.getAttribute("number").trim();
-  const courseDepartment = course
-    .getAttribute("department")
-    .trim()
-    .toLowerCase();
-  const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=col&p=1&subject=${courseDepartment}`;
+  let courseNumber, courseDepartment;
+
+  if (course.hasAttribute("number")) {
+    // Parse the large lists of classes
+    courseNumber = course.getAttribute("number").trim();
+    courseDepartment = course.getAttribute("department").trim().toLowerCase();
+  } else {
+    // Parse the HTML to get individual course information
+    const courseInfo = course.textContent.trim().split(/\s+/);
+    courseDepartment = courseInfo[0].toLowerCase();
+    courseNumber = courseInfo[1];
+  }
+
+  const selectedCampus = localStorage.getItem("selectedCampus") || "col";
+  const apiUrl = `https://content.osu.edu/v2/classes/search?q=${courseNumber}&campus=${selectedCampus}&p=1&subject=${courseDepartment}`;
 
   // Check if the response is cached
   if (apiCache[apiUrl]) {
@@ -141,7 +150,7 @@ function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
 }
 
 function highlightCourses() {
-  const courses = document.querySelectorAll(".course.draggable");
+  const courses = document.querySelectorAll(".course");
 
   let currentTooltip = null;
   let tooltipCreatedByHover = false;

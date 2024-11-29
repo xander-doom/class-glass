@@ -2,8 +2,9 @@
   "manifest_version": 3,
   "name": "Class Glass",
   "version": "1.0",
-  "description": "Course Tooltips",
-  "permissions": ["activeTab"],
+  "description": "Adds course summaries to the OSU Degree Audit page.",
+  "author": "Xander Doom",
+  "homepage_url": "https://github.com/xander-doom/class-glass",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -11,7 +12,6 @@
     "128": "images/icon-128.png"
   },
   "action": {
-    "default_popup": "menu.html",
     "default_icon": {
       "16": "images/icon-16.png",
       "32": "images/icon-32.png",
@@ -28,5 +28,15 @@
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "permissions": ["storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "class-glass@xanderdoom.com"
+    }
   }
 }
