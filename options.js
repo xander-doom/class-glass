@@ -1,13 +1,13 @@
 // Saves options to chrome.storage
 const saveOptions = () => {
-  const campus = document.getElementById("cg-campus-select").value;
+  const campus = document.getElementById("cg-select-campus").value;
 
   chrome.storage.sync.set({ campus: campus }, () => {
     const status = document.getElementById("status");
-    status.textContent = "Options saved.";
+    status.textContent = "Options saved";
     setTimeout(() => {
       status.textContent = "";
-    }, 750);
+    }, 800);
   });
 };
 
@@ -15,7 +15,7 @@ const saveOptions = () => {
 // stored in chrome.storage.
 const restoreOptions = () => {
   chrome.storage.sync.get({ campus: "col" }, (items) => {
-    document.getElementById("cg-campus-select").value = items.campus;
+    document.getElementById("cg-select-campus").value = items.campus;
   });
 };
 

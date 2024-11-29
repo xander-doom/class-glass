@@ -25,28 +25,21 @@
   z-index: 1000;
 }
 
-.cg-body {
-  background-color: transparent; /* Ensure the body background is transparent */
-  margin: 0; /* Remove default margin */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* Full viewport height */
+.cg-font {
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
 }
 
-.cg-container {
-  padding: 20px;
-  border: 1px solid grey;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(
-    135deg,
-    #bb0000,
-    #666666
-  ); /* Scarlet and gray gradient */
-  color: white; /* Ensure text is readable on the gradient background */
+.cg-select-label {
+  display: block;
+  margin-top: 5px;
+  margin-left: 4px;
+  margin-bottom: 1px;
 }
 
-#cg-semester-select {
+.cg-select {
   appearance: none; /* Remove default styling */
   -webkit-appearance: none; /* Remove default styling for Safari */
   -moz-appearance: none; /* Remove default styling for Firefox */
@@ -57,20 +50,49 @@
   font-size: 16px;
   color: #333;
   cursor: pointer;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23333" d="M2 0L0 2h4z"/></svg>');
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23333" d="M2 5L0 3h4z"/></svg>');
   background-repeat: no-repeat;
   background-position: right 10px center;
+  margin: 6px 0px;
   background-size: 10px;
 }
 
-#cg-semester-select:focus {
+.cg-submit-button {
+  appearance: none; /* Remove default styling */
+  -webkit-appearance: none; /* Remove default styling for Safari */
+  -moz-appearance: none; /* Remove default styling for Firefox */
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 6px 0px;
+  transition-duration: 0.4s;
+}
+
+.cg-select:focus {
   outline: none;
   border-color: #007bff;
 }
 
-#cg-semester-select option {
+.cg-select option {
   background-color: #fff;
   color: #333;
+}
+
+.cg-submit-button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.cg-submit-button:focus {
+  outline: none;
+  border-color: #0056b3;
 }
 
 .cg-course-info {

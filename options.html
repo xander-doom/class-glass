@@ -3,10 +3,13 @@
 <html>
   <head>
     <title>Class Glass Options</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
   <body>
-    <label for="cg-campus-select">Select Campus:</label>
-    <select id="cg-campus-select">
+    <label class="cg-font cg-select-label" for="cg-select-campus"
+      >Select Campus:</label
+    >
+    <select class="cg-font cg-select" id="cg-select-campus">
       <option value="col">Columbus</option>
       <option value="lma">Lima</option>
       <option value="mns">Mansfield</option>
@@ -15,8 +18,8 @@
       <option value="wst">Wooster</option>
     </select>
 
-    <div id="status"></div>
-    <button id="save">Save</button>
+    <div class="cg-font" id="status"></div>
+    <button class="cg-submit-button" id="save">Save</button>
 
     <script src="options.js"></script>
   </body>
