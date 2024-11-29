@@ -151,6 +151,22 @@
   background-color: #479c43;
 }
 
+.cg-highlight-error {
+  background-color: #cd9191;
+}
+
+.cg-highlight-red {
+  background-color: #ef3e3e;
+}
+
+.cg-highlight-yellow {
+  background-color: #f4cc53;
+}
+
+.cg-highlight-green {
+  background-color: #70b56c;
+}
+
 .cg-icon {
   width: 2em;
   height: 2em;

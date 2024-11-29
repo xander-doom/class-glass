@@ -1,7 +1,8 @@
+//Cache to avoid repeated API calls
 const apiCache = {};
 
 function createTooltip(course, event, currentTooltip) {
-  // Remove any existing tooltip
+  // Remove the existing tooltip
   if (currentTooltip) {
     currentTooltip.remove();
     currentTooltip = null;
@@ -11,7 +12,7 @@ function createTooltip(course, event, currentTooltip) {
   const tooltip = document.createElement("div");
   tooltip.classList.add("cg-tooltip");
 
-  // Placeholder content
+  // Set to loading while the api is queried content
   tooltip.innerHTML = `
     Loading...
   `;
@@ -51,7 +52,6 @@ async function fetchCourseDetails(course, tooltip) {
 
     // Check if the response is cached
     if (apiCache[apiUrl]) {
-      console.log("Using cached data for:", apiUrl);
       updateTooltip(
         course,
         apiCache[apiUrl],
@@ -89,6 +89,8 @@ function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
         c.course.catalogNumber === courseNumber
     );
 
+    // If there are matching courses, assume they are identical besides the term offered.
+    // Get the term from each one and display them alongside the course details of the first one.
     if (matchingCourses.length > 0) {
       const matchingCourse = matchingCourses[0].course;
       const courseTitle = matchingCourse.title;
@@ -104,6 +106,7 @@ function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
         .map((term) => term.slice(0, 2) + term.slice(-2))
         .join(", ");
 
+      // Display tooltip
       tooltip.innerHTML = `
         <p><strong>${courseDepartment.toUpperCase()} ${courseNumber}: ${courseTitle}</strong></p>
         <div class="cg-course-info">
@@ -119,35 +122,49 @@ function updateTooltip(course, data, tooltip, courseDepartment, courseNumber) {
         </div>
       `;
 
+      // Remove the error styling if a course is found (only happens if you switch campuses)
+      course.classList.remove("cg-highlight-error");
+
+      // Callbacks for buttons
       tooltip
         .querySelector(".cg-button-clear")
         .addEventListener("click", () => {
-          course.style.removeProperty("background-color");
+          course.classList.remove(
+            "cg-highlight-red",
+            "cg-highlight-yellow",
+            "cg-highlight-green"
+          );
         });
       tooltip.querySelector(".cg-button-red").addEventListener("click", () => {
-        course.style.backgroundColor = "rgb(239, 62, 62)";
+        course.classList.add("cg-highlight-red");
+        course.classList.remove("cg-highlight-yellow", "cg-highlight-green");
       });
       tooltip
         .querySelector(".cg-button-yellow")
         .addEventListener("click", () => {
-          course.style.backgroundColor = "rgb(244, 204, 83)";
+          course.classList.remove("cg-highlight-red", "cg-highlight-green");
+          course.classList.add("cg-highlight-yellow");
         });
       tooltip
         .querySelector(".cg-button-green")
         .addEventListener("click", () => {
-          course.style.backgroundColor = "rgb(112, 181, 108)";
+          course.classList.remove("cg-highlight-red", "cg-highlight-yellow");
+          course.classList.add("cg-highlight-green");
         });
+
+      // Courses were found in the search but do not match
     } else {
       tooltip.innerHTML = `
         <strong>No offerings</strong>
       `;
-      course.style.backgroundColor = "rgb(239, 62, 62)";
+      course.classList.add("cg-highlight-error");
     }
+    // No courses were found in the search
   } else {
     tooltip.innerHTML = `
       <strong>No offerings</strong>
     `;
-    course.style.backgroundColor = "rgb(239, 62, 62)";
+    course.classList.add("cg-highlight-error");
   }
 }
 
@@ -155,11 +172,14 @@ function highlightCourses() {
   const courses = document.querySelectorAll(".course");
 
   let currentTooltip = null;
+  // Keep track of whether the tooltip was created by a hovering so it can be removed when the mouse leaves
   let tooltipCreatedByHover = false;
 
   courses.forEach((course) => {
+    // Add class to enable course coloring on hover
     course.classList.add("cg-highlight-button");
 
+    // Course interaction callbacks
     course.addEventListener("click", (event) => {
       event.stopPropagation();
       currentTooltip = createTooltip(course, event, currentTooltip);
@@ -191,4 +211,5 @@ function highlightCourses() {
   });
 }
 
+// Attach callbacks to all courses on the page on page load
 highlightCourses();
