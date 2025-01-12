@@ -18,17 +18,7 @@ Class Glass is available via the [Edge Add-Ons Store](https://microsoftedge.micr
 
 Mozilla web store [does not distribute add-ons which are only accessible to a closed user group](https://extensionworkshop.com/documentation/publish/add-on-policies/), but it does approve them for manual distribution.
 
-#### Prefered Method:
-
-<div id="xpi-download" class="install-ok">
-  <a href="https://github.com/xander-doom/class-glass/blob/main/65c9dc0e79e845739622-1.0.xpi?raw=true">
-    Direct Install Link  
-  </a>
-</div>
-
-#### OR
-
-1. Download [65c9dc0e79e845739622-1.0.xpi](65c9dc0e79e845739622-1.0.xpi) (which is approved and signed by Mozilla, hence the weird name).
+1. Download [65c9dc0e79e845739622-1.0.xpi](65c9dc0e79e845739622-1.0.xpi?raw=true) (which is approved and signed by Mozilla, hence the weird name).
 2. Go to [about:addons](about:addons)
 3. Settings cog -> Install Add-on from file
 
