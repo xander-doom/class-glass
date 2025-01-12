@@ -31,3 +31,11 @@ Safari is not supported because development requires a Mac and I don't have one.
 ### Other browsers
 
 If you use another browser, you may be able to install Class Glass by enabling developer mode and installing the extension from source. Download this repo and google "developer add-on installation" for whatever browser you use.
+
+## How does it work?
+
+Every time you hover over a class, the extension queries the `https://content.osu.edu/v2/classes/search` api, which returns up-to-date information about each course.
+
+This is the same API that [https://classes.osu.edu/](https://classes.osu.edu/) uses on the backend. It is not documented and not really intended for external use. It may be changed at any time, which would break this extension. Please file an issue if this happens.
+
+An example query looks like: [https://content.osu.edu/v2/classes/search?q=2221&campus=col&p=1&subject=cse](https://content.osu.edu/v2/classes/search?q=2221&campus=col&p=1&subject=cse)
